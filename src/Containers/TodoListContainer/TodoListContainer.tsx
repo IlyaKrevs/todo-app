@@ -14,7 +14,15 @@ interface IProps {
 
 type filterBy = 'all' | 'inProgress' | 'done' | 'deleted'
 
-
+type ShowObject = {
+    showItems: ITodo[],
+    count: {
+        all: number,
+        done: number,
+        inProg: number,
+        deleted: number
+    }
+}
 
 export const TodoListContainer: React.FC<IProps> = ({ }) => {
 
@@ -31,10 +39,40 @@ export const TodoListContainer: React.FC<IProps> = ({ }) => {
         dispatch(todoActions.removeTodo(id))
     }, [])
 
-    const allItems = todoItems
-    const doneItems = todoItems.filter(item => item.completed && !item.isDeleted)
-    const inProgress = todoItems.filter(item => !item.completed && !item.isDeleted)
-    const deletedItems = todoItems.filter(item => item.isDeleted)
+
+
+    let showObj = todoItems.reduce<ShowObject>((acc, next) => {
+        let done = next.completed && !next.isDeleted
+        let inProgress = !next.completed && !next.isDeleted
+        let isDeleted = next.isDeleted
+
+        acc.count.all += 1
+
+        filterBy === 'all' && acc.showItems.push(next)
+        if (done) {
+            acc.count.done += 1
+            filterBy === 'done' && acc.showItems.push(next)
+        } else if (inProgress) {
+            acc.count.inProg += 1
+            filterBy === 'inProgress' && acc.showItems.push(next)
+        } else if (isDeleted) {
+            acc.count.deleted += 1
+            filterBy === 'deleted' && acc.showItems.push(next)
+        }
+
+        return acc
+    }, {
+        showItems: [],
+        count: {
+            all: 0,
+            done: 0,
+            inProg: 0,
+            deleted: 0
+        }
+    })
+
+
+
 
     let myOptions: IOption[] = [
         { labelText: 'ShowAll', value: 'all' },
@@ -43,27 +81,15 @@ export const TodoListContainer: React.FC<IProps> = ({ }) => {
         { labelText: 'Trash', value: 'deleted' },
     ]
 
-
-    let showItems: ITodo[] = []
-    if (filterBy === 'all') {
-        showItems = allItems
-    } else if (filterBy === 'done') {
-        showItems = doneItems
-    } else if (filterBy === 'inProgress') {
-        showItems = inProgress
-    } else if (filterBy === 'deleted') {
-        showItems = deletedItems
-    }
-
     myOptions = myOptions.map(item => {
         if (item.value === 'all') {
-            return { ...item, labelText: item.labelText + ` (${allItems.length})` }
+            return { ...item, labelText: item.labelText + ` (${showObj.count.all})` }
         } else if (item.value === 'done') {
-            return { ...item, labelText: item.labelText + ` (${doneItems.length})` }
+            return { ...item, labelText: item.labelText + ` (${showObj.count.done})` }
         } else if (item.value === 'inProgress') {
-            return { ...item, labelText: item.labelText + ` (${inProgress.length})` }
+            return { ...item, labelText: item.labelText + ` (${showObj.count.inProg})` }
         } else if (item.value === 'deleted') {
-            return { ...item, labelText: item.labelText + ` (${deletedItems.length})` }
+            return { ...item, labelText: item.labelText + ` (${showObj.count.deleted})` }
         }
         return item
     })
@@ -71,7 +97,7 @@ export const TodoListContainer: React.FC<IProps> = ({ }) => {
     return (
         <ul className={classes.container}>
             <RadioGroup options={myOptions} name='tabs' value={filterBy} callback={setFilterBy} />
-            {showItems.map((item, i) => {
+            {showObj.showItems.map((item, i) => {
                 return <TodoItem
                     key={i}
                     todo={item}
