@@ -30,7 +30,7 @@ function App() {
         <Route path='/login' element={!isLoggin ? <LoginPage /> : <Navigate to={'/'} />} />
       </Routes>
 
-    
+
       {isLoggin && <div className='btnWrapper'>
         <MyColorBtn color='blue' text='LOGOUT' callback={logOut} />
       </div>}
