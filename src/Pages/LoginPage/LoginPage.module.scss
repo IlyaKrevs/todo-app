@@ -1,0 +1,16 @@
+.mainContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.wrapper {
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

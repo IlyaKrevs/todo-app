@@ -1,0 +1,30 @@
+.conatiner {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+.innerText {
+    font-size: large;
+    color: black;
+}
+
+
+.btnsContainer {
+    display: flex;
+    gap: 10px;
+}
+
+.completeStyle {
+    text-decoration: line-through;
+    background-color: rgb(94, 206, 94);
+    opacity: 0.7;
+}
+
+.isDeleted {
+    background-color: rgb(133, 106, 106);
+}

@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+
+    font-size: large;
+    color: black;
+}
+
+.labelStyle {
+    padding: 20px;
+
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 20px;
+
+    background-color: lightblue;
+    text-transform: uppercase;
+
+    &:hover {
+        opacity: 0.7;
+    }
+}
+
+.checkedStyle {
+    background-color: rgb(96, 173, 51);
+}
