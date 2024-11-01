@@ -49,12 +49,22 @@ export const TodoListContainer: React.FC<IProps> = ({ }) => {
 
 
     let showObj = todoItems.reduce<ShowObject>((acc, next) => {
-        const status = next.completed ? 'done' : next.isDeleted ? 'deleted' : 'inProgress';
-        acc.count.all += 1;
-        acc.count[status] += 1;
+        let done = next.completed && !next.isDeleted
+        let inProgress = !next.completed && !next.isDeleted
+        let isDeleted = next.isDeleted
 
-        if (filterBy === 'all' || filterBy === status) {
-            acc.showItems.push(next);
+        acc.count.all += 1
+
+        filterBy === 'all' && acc.showItems.push(next)
+        if (done) {
+            acc.count.done += 1
+            filterBy === 'done' && acc.showItems.push(next)
+        } else if (inProgress) {
+            acc.count.inProgress += 1
+            filterBy === 'inProgress' && acc.showItems.push(next)
+        } else if (isDeleted) {
+            acc.count.deleted += 1
+            filterBy === 'deleted' && acc.showItems.push(next)
         }
 
         return acc

@@ -43,7 +43,7 @@ export const RadioGroup: React.FC<IProps> = ({ value, callback, name, options, c
                             checked={isChecked}
                             onChange={callback}
                         />
-                        {item.labelText + ` ${counter[item.value]}`}
+                        {item.labelText + ` (${counter[item.value]})`}
                     </label>
                 )
             })}
