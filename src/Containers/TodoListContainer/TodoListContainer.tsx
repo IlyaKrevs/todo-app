@@ -19,10 +19,17 @@ type ShowObject = {
     count: {
         all: number,
         done: number,
-        inProg: number,
+        inProgress: number,
         deleted: number
     }
 }
+
+let myOptions: IOption[] = [
+    { labelText: 'ShowAll', value: 'all' },
+    { labelText: 'Completed', value: 'done' },
+    { labelText: 'In progress', value: 'inProgress' },
+    { labelText: 'Trash', value: 'deleted' },
+]
 
 export const TodoListContainer: React.FC<IProps> = ({ }) => {
 
@@ -42,22 +49,12 @@ export const TodoListContainer: React.FC<IProps> = ({ }) => {
 
 
     let showObj = todoItems.reduce<ShowObject>((acc, next) => {
-        let done = next.completed && !next.isDeleted
-        let inProgress = !next.completed && !next.isDeleted
-        let isDeleted = next.isDeleted
+        const status = next.completed ? 'done' : next.isDeleted ? 'deleted' : 'inProgress';
+        acc.count.all += 1;
+        acc.count[status] += 1;
 
-        acc.count.all += 1
-
-        filterBy === 'all' && acc.showItems.push(next)
-        if (done) {
-            acc.count.done += 1
-            filterBy === 'done' && acc.showItems.push(next)
-        } else if (inProgress) {
-            acc.count.inProg += 1
-            filterBy === 'inProgress' && acc.showItems.push(next)
-        } else if (isDeleted) {
-            acc.count.deleted += 1
-            filterBy === 'deleted' && acc.showItems.push(next)
+        if (filterBy === 'all' || filterBy === status) {
+            acc.showItems.push(next);
         }
 
         return acc
@@ -66,37 +63,23 @@ export const TodoListContainer: React.FC<IProps> = ({ }) => {
         count: {
             all: 0,
             done: 0,
-            inProg: 0,
+            inProgress: 0,
             deleted: 0
         }
     })
 
 
 
-
-    let myOptions: IOption[] = [
-        { labelText: 'ShowAll', value: 'all' },
-        { labelText: 'Completed', value: 'done' },
-        { labelText: 'In progress', value: 'inProgress' },
-        { labelText: 'Trash', value: 'deleted' },
-    ]
-
-    myOptions = myOptions.map(item => {
-        if (item.value === 'all') {
-            return { ...item, labelText: item.labelText + ` (${showObj.count.all})` }
-        } else if (item.value === 'done') {
-            return { ...item, labelText: item.labelText + ` (${showObj.count.done})` }
-        } else if (item.value === 'inProgress') {
-            return { ...item, labelText: item.labelText + ` (${showObj.count.inProg})` }
-        } else if (item.value === 'deleted') {
-            return { ...item, labelText: item.labelText + ` (${showObj.count.deleted})` }
-        }
-        return item
-    })
-
     return (
         <ul className={classes.container}>
-            <RadioGroup options={myOptions} name='tabs' value={filterBy} callback={setFilterBy} />
+            <RadioGroup
+                options={myOptions}
+                name='tabs'
+                value={filterBy}
+                callback={setFilterBy}
+                counter={showObj.count}
+            />
+
             {showObj.showItems.map((item, i) => {
                 return <TodoItem
                     key={i}
@@ -107,7 +90,3 @@ export const TodoListContainer: React.FC<IProps> = ({ }) => {
         </ul>
     )
 }
-
-
-
-

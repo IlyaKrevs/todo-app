@@ -1,11 +1,19 @@
 import React from 'react'
 import classes from './RadioGroup.module.scss'
 
+type myCounter = {
+    all: number,
+    done: number,
+    inProgress: number,
+    deleted: number
+}
+
 interface IProps {
     value: string,
     callback: (e: React.ChangeEvent<HTMLInputElement>) => void,
     options: IOption[],
-    name: string
+    name: string,
+    counter: myCounter
 }
 
 export interface IOption {
@@ -15,7 +23,7 @@ export interface IOption {
 
 
 
-export const RadioGroup: React.FC<IProps> = ({ value, callback, name, options }) => {
+export const RadioGroup: React.FC<IProps> = ({ value, callback, name, options, counter }) => {
     return (
         <div className={classes.container}>
             {options.map((item) => {
@@ -35,7 +43,7 @@ export const RadioGroup: React.FC<IProps> = ({ value, callback, name, options })
                             checked={isChecked}
                             onChange={callback}
                         />
-                        {item.labelText}
+                        {item.labelText + ` ${counter[item.value]}`}
                     </label>
                 )
             })}
